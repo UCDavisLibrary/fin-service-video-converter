@@ -11,7 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "@google-cloud/storage": "^3.3.0",
-    "@ucd-lib/fin-node-api": "^0.11.6",
+    "@ucd-lib/fin-node-api": "^0.11.7",
     "@ucd-lib/fin-node-utils": "^0.2.18",
     "express": "^4.17.1",
     "fs-extra": "^8.1.0",

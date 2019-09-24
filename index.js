@@ -6,7 +6,10 @@ const multer = require('multer');
 const upload = multer({ dest: '/storage/uploads' });
 
 function auth(req, res, next) {
-  let token = req.get('X-FIN-SERVICE-SIGNATURE');
+  let token = req.get('X-FIN-SERVICE-SIGNATURE') || req.get('authorization') || req.query.token;
+  if( token ) token = token.replace(/^Bearer /i, '');
+
+  req.token = token;
   token = jwt.validate(token);
 
   if( !token ) {
@@ -28,15 +31,16 @@ function handleError(res, error, id) {
   });
 }
 
-app.post('/', auth, upload.single(), async (req, res) => {
+app.post('/', auth, upload.single('file'), async (req, res) => {
   let email = req.query.email || '';
   let fcUrl = req.query.fcUrl || '';
-  let token = req.get('X-FIN-SERVICE-SIGNATURE');
+  let token = req.token;
   let id;
 
   try {
     id = await model.convert({
-      file: req.file.filename,
+      filename: req.file.originalname,
+      filepath: req.file.path,
       email, fcUrl, 
       jwt: token,
       username : req.user.username
@@ -49,27 +53,29 @@ app.post('/', auth, upload.single(), async (req, res) => {
 
 app.delete(/^\/.*/, auth, async (req, res) => {
   let fcUrl = req.query.fcUrl || '';
-  let token = req.get('X-FIN-SERVICE-SIGNATURE');
+  let token = req.token;
+  let id = req.path.replace(/\/fcr:metadata.*/, '');
 
   try {
     await model.delete({
       file: req.file.filename, fcUrl,
       jwt: token,
-      id: req.originalUrl
+      id
     });
     res.status(204).send();
   } catch(e) {
-    handleError(res, e, id);
+    handleError(res, e,id);
   }
 });
 
 app.get(/^\/.*/, auth, async (req, res) => {
   let fcUrl = req.query.fcUrl || '';
+  let id = req.path.replace(/\/fcr:metadata.*/, '');
 
   try {
     let url = await model.download({
       fcUrl,
-      id: req.originalUrl
+      id
     });
     res.redirect(url);
   } catch(e) {
