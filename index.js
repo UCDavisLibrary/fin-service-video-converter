@@ -34,6 +34,7 @@ function handleError(res, error, id) {
 app.post('/', auth, upload.single('file'), async (req, res) => {
   let email = req.query.email || '';
   let fcUrl = req.query.fcUrl || '';
+  let svcId = req.query.svcId || '';
   let token = req.token;
   let id;
 
@@ -41,9 +42,9 @@ app.post('/', auth, upload.single('file'), async (req, res) => {
     id = await model.convert({
       filename: req.file.originalname,
       filepath: req.file.path,
-      email, fcUrl, 
+      email, fcUrl, svcId,
       jwt: token,
-      username : req.user.username
+      username : req.user.username,
     });
     res.send(id);
   } catch(e) {
@@ -58,7 +59,7 @@ app.delete(/^\/.*/, auth, async (req, res) => {
 
   try {
     await model.delete({
-      file: req.file.filename, fcUrl,
+      fcUrl,
       jwt: token,
       id
     });
