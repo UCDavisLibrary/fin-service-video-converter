@@ -1,0 +1,30 @@
+
+version: '2'
+
+###
+# Dev
+###
+services:
+  
+  ###
+  # Font End NodeJS Application Server & Proxy
+  ###
+  video-service:
+    build: .
+    volumes:
+      - ./lib:/service/lib
+      - ./index.js:/service/index.js
+      - ./webapp-service-account.json:/etc/fin/webapp-service-account.json
+      - storage:/storage
+    ports:
+      - 8090:8080
+    command: tail -f /dev/null
+    # command: node app
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ISSUER=${JWT_ISSUER}
+      - FIN_URL=${FIN_URL}
+
+volumes:
+  storage:
+    driver: local

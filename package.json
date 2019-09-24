@@ -1,0 +1,20 @@
+{
+  "name": "@ucd-lib/fin-service-video-converter",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "jrmerz@ucdavis.edu",
+  "license": "MIT",
+  "dependencies": {
+    "@google-cloud/storage": "^3.3.0",
+    "@ucd-lib/fin-node-api": "^0.11.6",
+    "@ucd-lib/fin-node-utils": "^0.2.18",
+    "express": "^4.17.1",
+    "fs-extra": "^8.1.0",
+    "multer": "^1.4.2"
+  }
+}
