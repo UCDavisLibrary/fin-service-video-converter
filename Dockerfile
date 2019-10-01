@@ -14,7 +14,7 @@ WORKDIR /service
 COPY package*.json ./
 RUN npm install --only=production
 
-COPY lib ./
+COPY lib ./lib
 COPY index.js ./
 
 CMD [ "npm", "start" ]

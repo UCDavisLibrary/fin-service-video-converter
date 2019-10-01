@@ -10,6 +10,7 @@
   "author": "jrmerz@ucdavis.edu",
   "license": "MIT",
   "dependencies": {
+    "@google-cloud/pubsub": "^1.1.0",
     "@google-cloud/storage": "^3.3.0",
     "@ucd-lib/fin-node-api": "^0.11.7",
     "@ucd-lib/fin-node-utils": "^0.2.18",

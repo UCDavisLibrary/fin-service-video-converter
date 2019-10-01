@@ -24,7 +24,7 @@ services:
       - JWT_SECRET=${JWT_SECRET}
       - JWT_ISSUER=${JWT_ISSUER}
       - FIN_URL=${FIN_URL}
-
+      - SERVICE_NAME=${SERVICE_NAME}
 volumes:
   storage:
     driver: local

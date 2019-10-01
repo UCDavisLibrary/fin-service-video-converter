@@ -35,18 +35,27 @@ app.post('/', auth, upload.single('file'), async (req, res) => {
   let email = req.query.email || '';
   let fcUrl = req.query.fcUrl || '';
   let svcId = req.query.svcId || '';
+  let workflowId = req.query.workflowId || '';
   let token = req.token;
   let id;
+
+  console.log({
+    filename: req.file.originalname,
+    filepath: req.file.path,
+    email, fcUrl, svcId, workflowId,
+    jwt: token,
+    username : req.user.username,
+  });
 
   try {
     id = await model.convert({
       filename: req.file.originalname,
       filepath: req.file.path,
-      email, fcUrl, svcId,
+      email, fcUrl, svcId, workflowId,
       jwt: token,
       username : req.user.username,
     });
-    res.send(id);
+    res.send(workflowId);
   } catch(e) {
     handleError(res, e, id);
   }
@@ -86,5 +95,5 @@ app.get(/^\/.*/, auth, async (req, res) => {
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
-  console.log('Hello world listening on port', port);
+  console.log('fin-service-video-converter listening on port', port);
 });
