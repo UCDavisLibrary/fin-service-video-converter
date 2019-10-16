@@ -2,11 +2,12 @@ const express = require('express');
 const {jwt} = require('@ucd-lib/fin-node-utils');
 const app = express();
 const model = require('./lib/model');
-const multer = require('multer');
-const upload = multer({ dest: '/storage/uploads' });
+const bodyParser = require('body-parser');
 
 function auth(req, res, next) {
-  let token = req.get('X-FIN-SERVICE-SIGNATURE') || req.get('authorization') || req.query.token;
+  console.log('auth');
+
+  let token = req.get('authorization') || req.get('X-FIN-SERVICE-SIGNATURE') || req.query.token;
   if( token ) token = token.replace(/^Bearer /i, '');
 
   req.token = token;
@@ -31,27 +32,28 @@ function handleError(res, error, id) {
   });
 }
 
-app.post('/', auth, upload.single('file'), async (req, res) => {
+app.use(bodyParser.json());
+
+app.post('/', auth, async (req, res) => {
+  console.log('post');
   let email = req.query.email || '';
-  let fcUrl = req.query.fcUrl || '';
+  let host = req.query.host || '';
   let svcId = req.query.svcId || '';
   let workflowId = req.query.workflowId || '';
   let token = req.token;
   let id;
 
   console.log({
-    filename: req.file.originalname,
-    filepath: req.file.path,
-    email, fcUrl, svcId, workflowId,
+    body: req.body,
+    email, host, svcId, workflowId,
     jwt: token,
     username : req.user.username,
   });
 
   try {
     id = await model.convert({
-      filename: req.file.originalname,
-      filepath: req.file.path,
-      email, fcUrl, svcId, workflowId,
+      gcsFile: req.body.file,
+      email, host, svcId, workflowId,
       jwt: token,
       username : req.user.username,
     });
@@ -62,13 +64,14 @@ app.post('/', auth, upload.single('file'), async (req, res) => {
 });
 
 app.delete(/^\/.*/, auth, async (req, res) => {
-  let fcUrl = req.query.fcUrl || '';
+  let fcPath = req.query.fcPath || '';
+  let host = req.query.host || '';
   let token = req.token;
   let id = req.path.replace(/\/fcr:metadata.*/, '');
 
   try {
     await model.delete({
-      fcUrl,
+      fcPath, host,
       jwt: token,
       id
     });
@@ -79,12 +82,14 @@ app.delete(/^\/.*/, auth, async (req, res) => {
 });
 
 app.get(/^\/.*/, auth, async (req, res) => {
-  let fcUrl = req.query.fcUrl || '';
+  console.log('get')
+  let fcPath = req.query.fcPath || '';
+  let host = req.query.host || '';
   let id = req.path.replace(/\/fcr:metadata.*/, '');
 
   try {
     let url = await model.download({
-      fcUrl,
+      fcPath, host,
       id
     });
     res.redirect(url);

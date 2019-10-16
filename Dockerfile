@@ -9,6 +9,9 @@ RUN rm -rf ffmpeg-release-amd64-static.tar.xz ffmpeg-4.2.1-amd64-static
 
 RUN apt-get update && apt-get install -y zip
 
+COPY service-account.json /etc/fin/service-account.json
+COPY service-account.json /etc/fin/webapp-service-account.json
+
 WORKDIR /service
 
 COPY package*.json ./
