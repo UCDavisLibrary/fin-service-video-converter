@@ -1,0 +1,11 @@
+@prefix schema: <http://schema.org/> .
+@prefix ldp:  <http://www.w3.org/ns/ldp#> .
+@prefix ucdlib: <http://digital.ucdavis.edu/schema#> .
+
+<>
+    a ldp:Container, schema:MediaObject, ucdlib:StreamingVideo;
+    schema:contentUrl <{{folderName}}/playlist.m3u8> ;
+    ucdlib:clientMediaDownload <{{originalFile}}> ;
+    schema:encodesCreativeWork <{{originalFile}}> ;
+    schema:encodingFormat "application/x-mpegURL";
+    .
