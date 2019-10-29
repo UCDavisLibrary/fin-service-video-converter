@@ -1,6 +1,6 @@
 #! /bin/bash
 
-BASE_CONFIG="-vf pad='ceil(iw/2)*2:ceil(ih/2)*2' -c:a aac -ar 48000 -c:v h264 -profile:v main -crf 20 -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -hls_segment_type fmp4"
+BASE_CONFIG="-vf pad='ceil(iw/2)*2:ceil(ih/2)*2' -c:a aac -ar 48000 -c:v h264 -profile:v main -pix_fmt yuv420p -crf 20 -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -hls_segment_type fmp4"
 INPUT_FILE=$1
 
 OUTPUT_DIR=$(dirname $INPUT_FILE)
